@@ -1,0 +1,4 @@
+translations/*
+*.spec
+*.changes.in
+*.user
