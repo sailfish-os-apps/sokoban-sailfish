@@ -41,7 +41,12 @@ Page {
 
         PullDownMenu {
             MenuItem {
+                text: "Package (" + app.packages.get(app.currentPackage).name + ")";
+                onClicked: pageStack.push("Packages.qml");
+            }
+            MenuItem {
                 text: "Choose level";
+                //onClicked: pageStack.push("Levels.qml");
             }
             MenuItem {
                 text: "Restart game";
@@ -54,7 +59,12 @@ Page {
         if (app.game) {
             app.game.destroy();
         }
-        app.game = gameComponent.createObject (gameContainer, {})
+        if (app.level) {
+            app.game = gameComponent.createObject (gameContainer, {"level": app.level})
+        }
+        else {
+            app.game = gameComponent.createObject (gameContainer, {})
+        }
     }
 
     Item {
