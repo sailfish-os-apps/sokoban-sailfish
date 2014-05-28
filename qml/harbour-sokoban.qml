@@ -38,7 +38,13 @@ ApplicationWindow
     initialPage: Component { MainPage { } }
     cover: Qt.resolvedUrl("cover/CoverPage.qml")
 
+    PackagesModel { id: packages; }
+
     property Item game;
+    property ListModel packages: packages;
+    property int currentPackage: 0;
+    property int currentLevel: 0;
+    property string level: packages.get(currentPackage).levels.get(currentLevel).level;
 }
 
 

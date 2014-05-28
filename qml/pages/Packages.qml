@@ -5,13 +5,9 @@ import ".."
 Page {
     id: page;
 
-    PackagesModel {
-        id: packages;
-    }
-
     SilicaListView {
         id: listView
-        model: packages
+        model: app.packages
         anchors.fill: parent
         header: PageHeader {
             title: "Packages list"
