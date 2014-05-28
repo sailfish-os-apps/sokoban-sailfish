@@ -29,7 +29,9 @@ OTHER_FILES += qml/harbour-sokoban.qml \
     qml/GameComponent/Player.qml \
     qml/GameComponent/SwipeArea.qml \
     qml/GameComponent/Wall.qml \
-    qml/pages/MainPage.qml
+    qml/pages/MainPage.qml \
+    qml/pages/Packages.qml \
+    qml/PackagesModel.qml
 
 
 
