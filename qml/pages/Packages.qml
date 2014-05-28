@@ -22,7 +22,10 @@ Page {
                 color: delegate.highlighted ? Theme.highlightColor : Theme.primaryColor
             }
             onClicked: {
-                console.debug("packages", name, "selected")
+                app.currentPackage = index
+                app.currentLevel = 0;
+                pageStack.navigateBack();
+                app.game.reload();
             }
         }
         VerticalScrollDecorator {}

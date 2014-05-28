@@ -31,7 +31,8 @@ OTHER_FILES += qml/harbour-sokoban.qml \
     qml/GameComponent/Wall.qml \
     qml/pages/MainPage.qml \
     qml/pages/Packages.qml \
-    qml/PackagesModel.qml
+    qml/PackagesModel.qml \
+    qml/pages/Levels.qml
 
 
 

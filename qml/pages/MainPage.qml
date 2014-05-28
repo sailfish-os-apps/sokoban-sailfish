@@ -46,7 +46,7 @@ Page {
             }
             MenuItem {
                 text: "Choose level";
-                //onClicked: pageStack.push("Levels.qml");
+                onClicked: pageStack.push("Levels.qml");
             }
             MenuItem {
                 text: "Restart game";
@@ -80,7 +80,14 @@ Page {
     }
     Component {
         id: gameComponent;
-        Sokoban {anchors.fill: parent}
+        Sokoban {
+            anchors.fill: parent
+            signal reload;
+
+            onReload: {
+                loadGame();
+            }
+        }
     }
 }
 
