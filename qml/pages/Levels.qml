@@ -1,5 +1,7 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
+import QtQuick.LocalStorage 2.0
+import "../storage.js" as Storage
 import ".."
 
 Page {
@@ -21,15 +23,13 @@ Page {
         }
 
         Label {
-            x: Theme.paddingLarge
+            x: Theme.paddingSmall
+            anchors.left: parent.left;
+            anchors.right: parent.right;
+            font.pixelSize: Theme.fontSizeSmall
             text: app.packages.get(app.currentPackage).description
             color: Theme.primaryColor
-        }
-        Label {
-            x: Theme.paddingLarge
-            text: app.packages.get(app.currentPackage).mail
-            font.pixelSize: Theme.fontSizeSmall;
-            color: Theme.primaryColor
+            wrapMode: Text.WordWrap
         }
     }
 
@@ -47,12 +47,24 @@ Page {
         delegate: BackgroundItem {
             id: delegate
 
+            property bool won: Storage.getBestScore(app.packages.get(app.currentPackage).name, name) !== "0";
+
+            IconButton {
+                id: wonIcon;
+                anchors.left: parent.left
+                anchors.leftMargin: Theme.paddingSmall
+                icon.source: "image://theme/icon-header-accept"
+                visible: delegate.won;
+            }
+
             Label {
-                x: Theme.paddingLarge
+                anchors.left: wonIcon.right;
+                anchors.leftMargin: Theme.paddingLarge
                 text: name
                 anchors.verticalCenter: parent.verticalCenter
                 color: delegate.highlighted ? Theme.highlightColor : Theme.primaryColor
             }
+
             onClicked: {
                 app.currentLevel = index;
                 pageStack.navigateBack();

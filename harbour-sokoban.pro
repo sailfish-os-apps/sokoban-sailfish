@@ -32,7 +32,9 @@ OTHER_FILES += qml/harbour-sokoban.qml \
     qml/pages/MainPage.qml \
     qml/pages/Packages.qml \
     qml/PackagesModel.qml \
-    qml/pages/Levels.qml
+    qml/pages/Levels.qml \
+    qml/pages/About.qml \
+    storage.js
 
 
 

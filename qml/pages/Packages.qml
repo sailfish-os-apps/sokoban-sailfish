@@ -1,5 +1,7 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
+import QtQuick.LocalStorage 2.0
+import "../storage.js" as Storage
 import ".."
 
 Page {
@@ -21,6 +23,14 @@ Page {
                 anchors.verticalCenter: parent.verticalCenter
                 color: delegate.highlighted ? Theme.highlightColor : Theme.primaryColor
             }
+
+            Label {
+                anchors.right: parent.right
+                text: Storage.countLevel(name) + " / " + packages.get(index).levels.count
+                anchors.verticalCenter: parent.verticalCenter
+                color: delegate.highlighted ? Theme.highlightColor : Theme.primaryColor
+            }
+
             onClicked: {
                 app.currentPackage = index
                 app.currentLevel = 0;

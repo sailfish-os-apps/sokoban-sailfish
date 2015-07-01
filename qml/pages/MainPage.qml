@@ -30,6 +30,8 @@
 
 import QtQuick 2.0
 import Sailfish.Silica 1.0
+import QtQuick.LocalStorage 2.0
+import "../storage.js" as Storage
 import "../GameComponent"
 
 
@@ -37,28 +39,134 @@ Page {
     id: page
 
     SilicaFlickable {
+        id: flickable;
         anchors.fill: parent
 
         PullDownMenu {
             MenuItem {
-                text: "Package (" + app.packages.get(app.currentPackage).name + ")";
-                onClicked: pageStack.push("Packages.qml");
+                text: "About";
+                onClicked: pageStack.push("About.qml");
             }
             MenuItem {
-                text: "Choose level";
-                onClicked: pageStack.push("Levels.qml");
+                text: "Package (" + app.packages.get(app.currentPackage).name + ")";
+                onClicked: pageStack.push("Packages.qml");
             }
             MenuItem {
                 text: "Restart game";
                 onClicked:  loadGame();
             }
         }
+
+        Column {
+            id: info
+            spacing: Theme.paddingSmall
+            anchors {
+                left: parent.left;
+                right: parent.right;
+                margins: Theme.paddingLarge;
+            }
+
+            PageHeader {
+                id: pageHeader;
+                title: packages.get(currentPackage).levels.get(currentLevel).name
+            }
+
+            Row {
+                anchors.horizontalCenter: parent.horizontalCenter
+
+                IconButton {
+                    anchors.verticalCenter: parent.verticalCenter
+                    icon.source: "image://theme/icon-m-left"
+                    enabled: currentLevel > 0
+                    onClicked: {
+                        currentLevel--;
+                        loadGame();
+                    }
+                }
+                Column {
+                    anchors.verticalCenter: parent.verticalCenter;
+                    Label {
+                        x: Theme.paddingSmall
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        font.pixelSize: Theme.fontSizeMedium
+                        text: app.bestScore === 0 ? "unsolved" : "solved in " + app.bestScore;
+                        color: Theme.highlightColor
+                        wrapMode: Text.WordWrap
+                    }
+
+                    Label {
+                        x: Theme.paddingSmall
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        font.pixelSize: Theme.fontSizeMedium
+                        text: "moves : " + app.game.moves
+                        color: Theme.highlightColor
+                        wrapMode: Text.WordWrap
+                    }
+                }
+
+                IconButton {
+                    anchors.verticalCenter: parent.verticalCenter
+                    icon.source: "image://theme/icon-m-right"
+                    enabled: currentLevel < packages.get(currentPackage).levels.count - 1
+                    onClicked: {
+                        currentLevel++;
+                        loadGame();
+                    }
+                }
+            }
+
+            BackgroundItem {
+                height: columnLevels.height
+
+                Column {
+                    id: columnLevels
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.leftMargin: Theme.paddingSmall
+                    Label {
+                        anchors.left: parent.left;
+                        anchors.right: parent.right;
+                        font.pixelSize: Theme.fontSizeMedium
+                        text: app.packages.get(app.currentPackage).name
+                        color: Theme.highlightColor
+                        wrapMode: Text.WordWrap
+                    }
+
+                    Label {
+                        maximumLineCount: 4;
+                        anchors.left: parent.left;
+                        anchors.right: parent.right;
+                        font.pixelSize: Theme.fontSizeSmall
+                        text: app.packages.get(app.currentPackage).description
+                        color: Theme.primaryColor
+                        wrapMode: Text.WordWrap
+                        truncationMode: TruncationMode.Elide;
+                    }
+
+                }
+                onClicked: {
+                    pageStack.push("Levels.qml");
+                }
+            }
+        }
+
+    }
+
+    Connections {
+        target: app;
+        onCurrentLevelChanged: { loadGame (); }
+        onCurrentPackageChanged: { loadGame (); }
     }
 
     function loadGame() {
         if (app.game) {
             app.game.destroy();
+            app.bestScore = 0;
         }
+        var packageName = packages.get(currentPackage).name;
+        var levelName = packages.get(currentPackage).levels.get(currentLevel).name
+        Storage.initialize();
+        app.bestScore = Storage.getBestScore(packageName, levelName);
         if (app.level) {
             app.game = gameComponent.createObject (gameContainer, {"level": app.level})
         }
@@ -69,12 +177,15 @@ Page {
 
     Item {
         id: gameContainer;
-        height: parent.height / 2;
+        height: parent.height - info.height;
         anchors {
             left: parent.left;
             right: parent.right;
             bottom: parent.bottom;
-            margins: 10;
+            leftMargin: 10;
+            rightMargin: 10;
+            bottomMargin: 5;
+            topMargin: 20;
         }
         Component.onCompleted: { loadGame (); }
     }
@@ -86,6 +197,19 @@ Page {
 
             onReload: {
                 loadGame();
+            }
+
+            onWin: {
+                Storage.initialize();
+                var packageName = packages.get(currentPackage).name;
+                var levelName = packages.get(currentPackage).levels.get(currentLevel).name
+                var score = Storage.getBestScore(packageName, levelName);
+                console.debug(score, moves, app.bestScore);
+                if (score === "0" || moves < score) {
+                    Storage.setBestScore(packageName, levelName, moves)
+                    app.bestScore = moves;
+                }
+                console.debug(score, moves, app.bestScore);
             }
         }
     }

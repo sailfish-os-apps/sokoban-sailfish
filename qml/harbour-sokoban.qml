@@ -30,6 +30,8 @@
 
 import QtQuick 2.0
 import Sailfish.Silica 1.0
+import QtQuick.LocalStorage 2.0
+import "storage.js" as Storage
 import "pages"
 
 ApplicationWindow
@@ -45,6 +47,21 @@ ApplicationWindow
     property int currentPackage: 0;
     property int currentLevel: 0;
     property string level: packages.get(currentPackage).levels.get(currentLevel).level;
+    property int bestScore: 0;
+
+    Component.onCompleted: {
+        Storage.initialize();
+        currentPackage = Storage.getLastPackage();
+        currentLevel = Storage.getLastLevel();
+    }
+
+    onCurrentPackageChanged: {
+        Storage.setLastPackage(currentPackage);
+    }
+
+    onCurrentLevelChanged: {
+        Storage.setLastLevel(currentLevel);
+    }
 }
 
 
