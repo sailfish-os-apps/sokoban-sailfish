@@ -94,13 +94,50 @@ Page {
                         wrapMode: Text.WordWrap
                     }
 
-                    Label {
-                        x: Theme.paddingSmall
+                    Row {
                         anchors.horizontalCenter: parent.horizontalCenter
-                        font.pixelSize: Theme.fontSizeMedium
-                        text: "moves : " + app.game.moves
-                        color: Theme.highlightColor
-                        wrapMode: Text.WordWrap
+
+                        Label {
+                            anchors.verticalCenter: parent.verticalCenter
+                            x: Theme.paddingSmall
+                            font.pixelSize: Theme.fontSizeMedium
+                            text: "moves : "
+                            color: Theme.highlightColor
+                            wrapMode: Text.WordWrap
+                        }
+
+                        IconButton {
+                            anchors.verticalCenter: parent.verticalCenter
+                            icon.source: "image://theme/icon-m-previous-song"
+                            enabled: app.game.moves > 0
+                            property bool isHold: false;
+
+                            onClicked: {
+                                app.game.undo();
+                            }
+                            onPressed: {
+                                isHold = true;
+                            }
+                            onReleased: {
+                                isHold = false
+                            }
+
+                            Timer {
+                                interval: 300;
+                                running: parent.isHold;
+                                repeat: true
+                                onTriggered: app.game.undo();
+                            }
+                        }
+
+                        Label {
+                            anchors.verticalCenter: parent.verticalCenter
+                            x: Theme.paddingSmall
+                            font.pixelSize: Theme.fontSizeMedium
+                            text: app.game.moves + "     "
+                            color: Theme.highlightColor
+                            wrapMode: Text.WordWrap
+                        }
                     }
                 }
 
