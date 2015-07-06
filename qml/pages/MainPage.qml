@@ -230,6 +230,7 @@ Page {
         id: gameComponent;
         Sokoban {
             anchors.fill: parent
+            moveThreshold: app.moveThreshold;
             signal reload;
 
             onReload: {

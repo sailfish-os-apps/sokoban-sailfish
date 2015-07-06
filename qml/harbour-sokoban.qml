@@ -48,6 +48,7 @@ ApplicationWindow
     property int currentLevel: 0;
     property string level: packages.get(currentPackage).levels.get(currentLevel).level;
     property int bestScore: 0;
+    property int moveThreshold: 50;
 
     Component.onCompleted: {
         Storage.initialize();
